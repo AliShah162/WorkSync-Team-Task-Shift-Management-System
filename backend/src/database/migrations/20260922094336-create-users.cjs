@@ -41,11 +41,13 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+        //This line tells Postgres to set the column's default value to the current date and time, using Postgres's own clock — not JavaScript's.
       },
       updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+        //same
       },
     });
   },
@@ -56,3 +58,7 @@ module.exports = {
     await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_users_role";');
   },
 };
+
+//1) dropTable('users') removes the table — but the ENUM type (enum_users_role) is a separate thing, so it stays behind.
+
+//2) DROP TYPE IF EXISTS "enum_users_role" removes that leftover ENUM type — otherwise the next db:migrate would fail with "type already exists".

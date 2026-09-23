@@ -5,6 +5,7 @@ import { Department } from './models/department.model.js';
 import { User } from './models/user.model.js';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
+import { AuthModule } from './auth/auth.module.js';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AppService } from './app.service.js';
 
     // this tells, makes the User model injectable in this module
     SequelizeModule.forFeature([User]),
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],

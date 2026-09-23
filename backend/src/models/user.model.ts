@@ -7,7 +7,9 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { Department } from './department.model.js';
-
+//A model Describes the table to TypeScript/Sequelize
+// This file is a model. It only tells Sequelize: "When my code says User.findAll(), translate it to SQL against the users table."
+// It never runs any CREATE TABLE.
 @Table({
   tableName: 'users',
   underscored: true,

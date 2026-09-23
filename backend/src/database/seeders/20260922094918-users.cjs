@@ -1,5 +1,5 @@
 'use strict';
-
+//seeders are used to insert data like bulk data.
 const bcrypt = require('bcrypt');
 
 module.exports = {
