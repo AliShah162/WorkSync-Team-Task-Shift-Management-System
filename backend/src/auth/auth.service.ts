@@ -13,6 +13,7 @@ import { Department } from '../models/department.model.js';
 import { RegisterDto } from './dto/register.dto.js';
 import { LoginDto } from './dto/login.dto.js';
 
+//we create methods in service file like we created register and login
 @Injectable()
 export class AuthService {
   constructor(
@@ -93,3 +94,4 @@ export class AuthService {
     };
   }
 }
+//If you only returned the token, the frontend would have to make a second API call (GET /me) just to get the name and role. Returning it here saves that round-trip.

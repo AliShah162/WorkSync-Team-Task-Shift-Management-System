@@ -6,6 +6,15 @@ import { User } from './models/user.model.js';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { AuthModule } from './auth/auth.module.js';
+import { Project } from './models/project.model.js';
+import { ProjectMember } from './models/project-member.model.js';
+import { ProjectsModule } from './projects/projects.module.js';
+import { Task } from './models/task.model.js';
+import { Comment } from './models/comment.model.js';
+import { TasksModule } from './tasks/tasks.module.js';
+import { Shift } from './models/shift.model.js';
+import { ShiftsModule } from './shifts/shifts.module.js';
+
 
 @Module({
   imports: [
@@ -16,7 +25,7 @@ import { AuthModule } from './auth/auth.module.js';
       useFactory: (config: ConfigService) => ({
         dialect: 'postgres',
         uri: config.get<string>('DATABASE_URL'),
-        models: [Department, User],
+        models: [Department, User, Project, ProjectMember, Task, Comment,Shift],
         autoLoadModels: true,
         synchronize: false,
         logging: false,
@@ -36,7 +45,10 @@ import { AuthModule } from './auth/auth.module.js';
 
     // this tells, makes the User model injectable in this module
     SequelizeModule.forFeature([User]),
-    AuthModule
+    AuthModule,
+    ProjectsModule,
+    TasksModule,
+    ShiftsModule
   ],
   controllers: [AppController],
   providers: [AppService],
