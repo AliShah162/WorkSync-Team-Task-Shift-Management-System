@@ -14,6 +14,8 @@ import { Comment } from './models/comment.model.js';
 import { TasksModule } from './tasks/tasks.module.js';
 import { Shift } from './models/shift.model.js';
 import { ShiftsModule } from './shifts/shifts.module.js';
+import { DashboardModule } from './dashboard/dashboard.module.js';
+
 
 
 @Module({
@@ -48,7 +50,8 @@ import { ShiftsModule } from './shifts/shifts.module.js';
     AuthModule,
     ProjectsModule,
     TasksModule,
-    ShiftsModule
+    ShiftsModule,
+    DashboardModule
   ],
   controllers: [AppController],
   providers: [AppService],

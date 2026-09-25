@@ -21,16 +21,19 @@ export class TasksService {
     @InjectModel(Task) private readonly taskModel: typeof Task,
     @InjectModel(Comment) private readonly commentModel: typeof Comment,
     @InjectModel(Project) private readonly projectModel: typeof Project,
-    @InjectModel(ProjectMember) private readonly memberModel: typeof ProjectMember,
+    @InjectModel(ProjectMember)
+    private readonly memberModel: typeof ProjectMember,
     @InjectModel(User) private readonly userModel: typeof User,
   ) {}
 
   // helper: is user a member of this project?
   private async isMember(projectId: number, userId: number) {
-    const row = await this.memberModel.findOne({ where: { projectId, userId } });
+    const row = await this.memberModel.findOne({
+      where: { projectId, userId },
+    });
     return !!row;
   }
-
+  // we created methods here like: create, findAll, findOne,update,remove,addComment    
   async create(dto: CreateTaskDto, user: { id: number; role: string }) {
     const project = await this.projectModel.findByPk(dto.projectId);
     if (!project) throw new NotFoundException('Project not found');
@@ -52,7 +55,7 @@ export class TasksService {
       assignedUserId: dto.assignedUserId ?? null,
       dueDate: dto.dueDate ? new Date(dto.dueDate) : null,
       status: 'TODO',
-    }as any);
+    } as any);
   }
 
   async findAll(filter: FilterTasksDto, user: { id: number; role: string }) {
@@ -83,7 +86,11 @@ export class TasksService {
     const { rows, count } = await this.taskModel.findAndCountAll({
       where,
       include: [
-        { model: User, as: 'assignedUser', attributes: ['id', 'name', 'email'] },
+        {
+          model: User,
+          as: 'assignedUser',
+          attributes: ['id', 'name', 'email'],
+        },
         { model: Project, as: 'project', attributes: ['id', 'title'] },
       ],
       order: [[sortBy, order]],
@@ -103,12 +110,18 @@ export class TasksService {
   async findOne(id: number) {
     const task = await this.taskModel.findByPk(id, {
       include: [
-        { model: User, as: 'assignedUser', attributes: ['id', 'name', 'email'] },
+        {
+          model: User,
+          as: 'assignedUser',
+          attributes: ['id', 'name', 'email'],
+        },
         { model: Project, as: 'project', attributes: ['id', 'title'] },
         {
           model: Comment,
           as: 'comments',
-          include: [{ model: User, as: 'user', attributes: ['id', 'name', 'email'] }],
+          include: [
+            { model: User, as: 'user', attributes: ['id', 'name', 'email'] },
+          ],
         },
       ],
       order: [[{ model: Comment, as: 'comments' }, 'createdAt', 'ASC']],
@@ -124,7 +137,8 @@ export class TasksService {
     if (dto.title !== undefined) task.title = dto.title;
     if (dto.description !== undefined) task.description = dto.description;
     if (dto.status !== undefined) task.status = dto.status;
-    if (dto.assignedUserId !== undefined) task.assignedUserId = dto.assignedUserId;
+    if (dto.assignedUserId !== undefined)
+      task.assignedUserId = dto.assignedUserId;
     if (dto.dueDate !== undefined) task.dueDate = new Date(dto.dueDate);
 
     await task.save();
@@ -146,6 +160,6 @@ export class TasksService {
       taskId,
       userId,
       body: dto.body,
-    }as any);
+    } as any);
   }
 }

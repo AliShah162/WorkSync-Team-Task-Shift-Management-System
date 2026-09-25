@@ -7,8 +7,8 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { User } from './user.model.js';                     // ← real import
-import { ProjectMember } from './project-member.model.js';  // ← real import
+import { User } from './user.model.js';                     
+import { ProjectMember } from './project-member.model.js';
 
 @Table({ tableName: 'projects', underscored: true, timestamps: true })
 export class Project extends Model<Project> {
@@ -31,19 +31,19 @@ export class Project extends Model<Project> {
   @Column({ type: DataType.DATE, allowNull: true })
   declare deadline?: Date;
 
-  @ForeignKey(() => User)                                    // ← fixed
+  @ForeignKey(() => User)                                     
   @Column({ type: DataType.INTEGER, allowNull: false, field: 'created_by' })
   declare createdBy: number;
 
-  @BelongsTo(() => User, {                                   // ← fixed
+  @BelongsTo(() => User, {                                   
     foreignKey: 'created_by',
     as: 'creator',
   })
   declare creator?: User;
 
   @BelongsToMany(
-    () => User,                                              // ← fixed
-    () => ProjectMember,                                     // ← fixed
+    () => User,                                             
+    () => ProjectMember,                                     
     'project_id',
     'user_id',
   )

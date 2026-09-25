@@ -13,7 +13,7 @@ export class Department extends Model<Department> {
     primaryKey: true,
     autoIncrement: true,
   })
-  declare id: number;
+  declare id: number;//The declare keyword lets you satisfy TypeScript without breaking Sequelize's runtime behavior.
 
   @Column({
     type: DataType.STRING(100),
