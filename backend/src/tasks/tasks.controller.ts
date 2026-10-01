@@ -17,6 +17,7 @@ import { FilterTasksDto } from './dto/filter-tasks.dto.js';
 import { CreateCommentDto } from './dto/create-comment.dto.js';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import { RolesGuard } from '../auth/roles.guard.js';
+import { Roles } from '../auth/roles.decorator.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 
 @Controller('tasks')
@@ -25,6 +26,7 @@ export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Post()
+  @Roles('admin')
   create(@Body() dto: CreateTaskDto, @CurrentUser() user: any) {
     return this.tasksService.create(dto, user);
   }

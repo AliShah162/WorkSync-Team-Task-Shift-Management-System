@@ -14,10 +14,10 @@ import { UpdateProjectDto } from './dto/update-project.dto.js';
 export class ProjectsService {
   constructor(
     @InjectModel(Project) private readonly projectModel: typeof Project,
-    @InjectModel(ProjectMember) private readonly memberModel: typeof ProjectMember,
+    @InjectModel(ProjectMember)
+    private readonly memberModel: typeof ProjectMember,
     @InjectModel(User) private readonly userModel: typeof User,
   ) {}
-
 
   //these methods will be called in the controller file
 
@@ -29,33 +29,38 @@ export class ProjectsService {
       deadline: dto.deadline ? new Date(dto.deadline) : null,
       status: 'active',
       createdBy: adminId,
-    }as any);
+    } as any);
   }
 
   // List projects
   // Admin → all projects
   // Employee → only projects they're a member of
   async findAll(user: { id: number; role: string }) {
-    if (user.role === 'admin') {
-      return this.projectModel.findAll({
-        order: [['createdAt', 'DESC']],
-      });
-    }
+  console.log('=== findAll called ===');
+  console.log('user:', user);
 
-    // employee: find memberships, then projects
-    const memberships = await this.memberModel.findAll({
-      where: { userId: user.id },
-      attributes: ['projectId'],
-    });
-    const projectIds = memberships.map((m) => m.projectId);
-
-    if (projectIds.length === 0) return [];
-
-    return this.projectModel.findAll({
-      where: { id: projectIds },
-      order: [['createdAt', 'DESC']],
-    });
+  if (user.role === 'admin') {
+    return this.projectModel.findAll({ order: [['createdAt', 'DESC']] });
   }
+
+  const memberships = await this.memberModel.findAll({
+    where: { userId: user.id },
+  });
+
+  console.log('memberships:', JSON.stringify(memberships, null, 2));
+
+  const projectIds = memberships.map((m: any) => m.project_id);
+  console.log('projectIds:', projectIds);
+
+  if (projectIds.length === 0) return [];
+
+  const projects = await this.projectModel.findAll({
+    where: { id: projectIds },
+    order: [['createdAt', 'DESC']],
+  });
+  console.log('projects found:', projects.length);
+  return projects;
+}
 
   async findOne(id: number) {
     const project = await this.projectModel.findByPk(id, {
@@ -102,7 +107,7 @@ export class ProjectsService {
     });
     if (existing) throw new BadRequestException('User already in project');
 
-    return this.memberModel.create({ projectId, userId }as any);//this line will actually add the member the rest is just rules
+    return this.memberModel.create({ projectId, userId } as any); //this line will actually add the member the rest is just rules
   }
 
   // Admin removes a member
@@ -115,4 +120,12 @@ export class ProjectsService {
     await row.destroy();
     return { removed: true };
   }
+
+//to remove a project
+  async remove(id: number) {
+  const project = await this.projectModel.findByPk(id);
+  if (!project) throw new NotFoundException('Project not found');
+  await project.destroy();
+  return { deleted: true };
+}
 }

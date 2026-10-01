@@ -30,9 +30,18 @@ export default function LoginPage() {
 
     localStorage.setItem('token', data.accessToken);
     localStorage.setItem('user', JSON.stringify(data.user));
+    document.cookie = `token=${data.accessToken}; path=/`;//this is to read the token from the cookie
 
     dispatch(login({ user: data.user, token: data.accessToken }));
     router.push('/');
+    fetch('/api/logger', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    level: 'info',
+    message: `User ${data.user.email} logged in`,
+  }),
+});
   } catch (err: any) {
     console.log('LOGIN ERROR:', err);
     setError(err.response?.data?.error?.message || 'Login failed');

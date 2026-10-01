@@ -25,6 +25,7 @@ export default function Home() {
       .catch(() => {
         dispatch(logout());
         localStorage.clear();
+        document.cookie = 'token=; path=/; max-age=0';
         router.push('/login');
       });
   }, [user, router, dispatch]);

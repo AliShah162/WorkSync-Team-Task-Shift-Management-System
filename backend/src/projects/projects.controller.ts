@@ -62,6 +62,11 @@ export class ProjectsController {
   ) {
     return this.projectsService.addMember(id, userId);
   }
+  @Delete(':id')
+  @Roles('admin')
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.projectsService.remove(id);
+  }
 
   @Delete(':id/members/:userId')
   @Roles('admin')

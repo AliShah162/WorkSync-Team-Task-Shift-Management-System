@@ -33,7 +33,7 @@ export class TasksService {
     });
     return !!row;
   }
-  // we created methods here like: create, findAll, findOne,update,remove,addComment    
+  // we created methods here like: create, findAll, findOne,update,remove,addComment
   async create(dto: CreateTaskDto, user: { id: number; role: string }) {
     const project = await this.projectModel.findByPk(dto.projectId);
     if (!project) throw new NotFoundException('Project not found');
@@ -72,9 +72,8 @@ export class TasksService {
     if (user.role !== 'admin') {
       const memberships = await this.memberModel.findAll({
         where: { userId: user.id },
-        attributes: ['projectId'],
       });
-      const projectIds = memberships.map((m) => m.projectId);
+      const projectIds = memberships.map((m: any) => m.project_id);
       where.projectId = where.projectId
         ? where.projectId
         : { [Op.in]: projectIds };

@@ -7,6 +7,8 @@ import { AllExceptionsFilter } from './common/all-exceptions.filter.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors({ origin: 'http://localhost:3000' });
+
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalFilters(new AllExceptionsFilter());
